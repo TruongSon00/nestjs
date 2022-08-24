@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { userInfo } from 'os';
-import { User } from 'src/model/user.model';
-import { Types, ObjectId } from 'mongoose';
+import { Inject, Injectable } from '@nestjs/common';
+import { IUser, User } from 'src/model/user.model';
+import { Types } from 'mongoose';
 import Ajv from 'ajv';
 import { IService } from '../core/interfaceService';
+import { BaseUserRepository } from './BaseUserRepository';
+import { validateRequestCreate, validateRequestEdit, validateRequestFindId } from 'src/requestValidate/requestUser';
 @Injectable()
 export class UserService implements IService {
+
+  constructor(private readonly baseUserRepository: BaseUserRepository) {
+    this.baseUserRepository = baseUserRepository
+  }
 
 
 
@@ -29,80 +34,77 @@ export class UserService implements IService {
       return false
   }
 
-  getList(filter: Object): Promise<any> {
-    const listuser = User.aggregate([
-      { $match: { filter } },
-      { $sort: { createdAt: -1 } }
-    ])
-    return listuser.exec()
+  getList(filter: Object): Promise<IUser[]> {
+    const listuser = this.baseUserRepository.find(filter)
+    return listuser
   }
 
-  create(data: any): Promise<any> {
-    let { name, age, departmentId, role } = data
+  create(data: validateRequestCreate): Promise<any> {
+    return this.baseUserRepository.create(data)
+    // let { name, age, departmentId, role } = data
 
-    role = role * 1 || 0
+    // role = role * 1 || 0
 
-    if (!this.checkId(departmentId))
-      return this.promissErr('DepartmentId invalid')
-    const innerArraySchema = {
-      type: 'object',
-      properties: {
-        departmentId: { type: 'string' },
-        role: { type: 'integer' }
-      }, required: ['departmentId']
-    }
-    const schema = {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        age: { type: 'integer' },
-        department: {
-          type: 'array',
-          'items': innerArraySchema
-        }
-      },
-      required: ["name", 'age'],
-      additionalProperties: false,
-    }
-    const user = {
-      name, age: age * 1, department: [{ departmentId, role }]
-    }
-    const validate = this.ajv.compile(schema)
-    const valid = validate(user)
-
-    if (valid) {
-      const newUser = new User(user)
-      return newUser.save()
-    } else
-      throw new Error("Du lieu khong hop le");
+    // if (!this.checkId(departmentId))
+    //   return this.promissErr('DepartmentId invalid')
+    // const innerArraySchema = {
+    //   type: 'object',
+    //   properties: {
+    //     departmentId: { type: 'string' },
+    //     role: { type: 'integer' }
+    //   }, required: ['departmentId']
+    // }
+    // const schema = {
+    //   type: 'object',
+    //   properties: {
+    //     name: { type: 'string' },
+    //     age: { type: 'integer' },
+    //     department: {
+    //       type: 'array',
+    //       'items': innerArraySchema
+    //     }
+    //   },
+    //   required: ["name", 'age', 'department'],
+    //   additionalProperties: false,
+    // }
+    // const user = {
+    //   name, age: age * 1, department: [{ departmentId, role }]
+    // }
+    // const validate = this.ajv.compile(schema)
+    // const valid = validate(user)
+    // console.log({ valid, user });
+    // if (valid) {
+    //   const newUser = new User(user)
+    //   return newUser.save()
+    // } else
 
   }
 
-  edit(id: string, data: any): Promise<any> {
+  edit(id: validateRequestFindId, data: validateRequestEdit): Promise<any> {
     if (!this.checkId(id))
       throw new Error("Du lieu khong hop le");
-    let { name, age, role } = data
+    let { name, age } = data
 
     const schema = {
       type: 'object',
       properties: {
         name: { type: 'string' },
         age: { type: 'number' },
-        role: { type: 'number' }
       },
-      required: ['name', 'age', 'role']
+      required: ['name', 'age']
     }
 
     const validate = this.ajv.compile(schema)
     const valid = validate(data)
     if (!valid)
       throw new Error("Du lieu khong hop le");
-    User.findByIdAndUpdate(id, { name, age, role })
+    User.findByIdAndUpdate(id, { name, age })
     return this.promissSucces('update succes', {})
 
   }
 
-  async getById(id: string): Promise<any> {
+
+  async getById(id: validateRequestFindId): Promise<any> {
     if (!this.checkId(id))
       throw new Error("Du lieu khong hop le");
     try {
@@ -113,7 +115,7 @@ export class UserService implements IService {
     }
   }
 
-  delete(id: string): Promise<any> {
+  delete(id: validateRequestFindId): Promise<any> {
     if (!this.checkId(id))
       throw new Error("Du lieu khong hop le");
 

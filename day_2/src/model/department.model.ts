@@ -1,6 +1,6 @@
 import { Schema, model, ObjectId } from 'mongoose';
 
-interface IDepartment {
+export interface IDepartment {
     name: string,
     descript: String
 }

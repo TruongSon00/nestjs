@@ -1,40 +1,42 @@
-import { Controller, Post, Body, Param } from '@nestjs/common';
-import { get } from 'http';
+import { Controller, Post, Body, Param, Get, Delete, Put, Inject } from '@nestjs/common';
 import { IService } from 'src/core/interfaceService';
+import { IUser } from 'src/model/user.model';
+import { IBaseRepository } from 'src/repository/IBaseRepository';
+import { validateRequestCreate, validateRequestEdit, validateRequestFindId } from 'src/requestValidate/requestUser';
 import { UserService } from './user.service';
 
 
 @Controller('user')
-export class UserController {
-    userService: UserService
-    constructor(userService: UserService) {
+export class UserController implements IService {
+
+    constructor(private readonly userService: UserService) {
         this.userService = userService
     }
 
-    @get()
-    getList(): Promise<any> {
+    @Get()
+    getList(): Promise<IUser[]> {
         return this.userService.getList({})
 
-        return
     }
-    edit(id: string, data: any): Promise<any> {
+
+    @Put()
+    edit(id: validateRequestFindId, data: validateRequestEdit): Promise<any> {
         throw new Error('Method not implemented.');
     }
 
-    @get(':id')
-    getById(@Param('id') id: string): Promise<any> {
+    @Get(':id')
+    getById(@Param('id') id: validateRequestFindId): Promise<any> {
         return this.userService.getById(id)
 
     }
 
-    @delete(':id')
-    delete(@Param('id') id: string): Promise<any> {
+    @Delete(':id')
+    delete(@Param('id') id: validateRequestFindId): Promise<any> {
         return this.userService.delete(id)
-        throw new Error('Method not implemented.');
     }
 
     @Post()
-    async create(@Body() user: any) {
+    async create(@Body() user: validateRequestCreate) {
 
         return await this.userService.create(user)
     }
