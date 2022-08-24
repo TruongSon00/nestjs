@@ -10,8 +10,7 @@ import { UnitModel } from 'src/models/unit/unit.model';
 @Injectable()
 export class UnitRepository
   extends BaseAbstractRepository<UnitModel>
-  implements UnitRepositoryInterface
-{
+  implements UnitRepositoryInterface {
   constructor(
     @InjectModel('UnitModel')
     private readonly unitModel: Model<UnitModel>,

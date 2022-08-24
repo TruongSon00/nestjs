@@ -1,6 +1,7 @@
 import {
     IsString, Min, IsInt, IsNotEmpty, IsMongoId, Max
 } from "class-validator";
+import { ObjectId } from "mongoose";
 
 export class validateRequestCreate {
     @IsString()
@@ -14,8 +15,8 @@ export class validateRequestCreate {
     age: number
 
     @IsNotEmpty()
-    @IsString()
-    department: string
+    @IsMongoId()
+    departmentId: ObjectId
 
     @IsInt()
     role: number

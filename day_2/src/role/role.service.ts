@@ -3,9 +3,8 @@ import { userInfo } from 'os';
 import { User } from 'src/model/user.model';
 import { Types, ObjectId } from 'mongoose';
 import Ajv from 'ajv';
-import { IService } from '../core/interfaceService';
 // @Injectable()
-export class RoleService implements IService {
+export class RoleService {
 
 
 

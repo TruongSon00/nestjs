@@ -2,14 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IUser, User } from 'src/model/user.model';
 import { Types } from 'mongoose';
 import Ajv from 'ajv';
-import { IService } from '../core/interfaceService';
-import { BaseUserRepository } from './BaseUserRepository';
 import { validateRequestCreate, validateRequestEdit, validateRequestFindId } from 'src/requestValidate/requestUser';
+import { IUserService } from './interface/user.service.interface';
+import { IUserRepository } from './interface/user.interface.repository';
 @Injectable()
-export class UserService implements IService {
+export class UserService implements IUserService<IUser> {
 
-  constructor(private readonly baseUserRepository: BaseUserRepository) {
-    this.baseUserRepository = baseUserRepository
+  constructor(
+    @Inject('IUserRepository')
+    private readonly userRepository: IUserRepository) {
+
   }
 
 
@@ -35,71 +37,19 @@ export class UserService implements IService {
   }
 
   getList(filter: Object): Promise<IUser[]> {
-    const listuser = this.baseUserRepository.find(filter)
+    const listuser = this.userRepository.getList(filter)
     return listuser
   }
 
   create(data: validateRequestCreate): Promise<any> {
-    return this.baseUserRepository.create(data)
-    // let { name, age, departmentId, role } = data
-
-    // role = role * 1 || 0
-
-    // if (!this.checkId(departmentId))
-    //   return this.promissErr('DepartmentId invalid')
-    // const innerArraySchema = {
-    //   type: 'object',
-    //   properties: {
-    //     departmentId: { type: 'string' },
-    //     role: { type: 'integer' }
-    //   }, required: ['departmentId']
-    // }
-    // const schema = {
-    //   type: 'object',
-    //   properties: {
-    //     name: { type: 'string' },
-    //     age: { type: 'integer' },
-    //     department: {
-    //       type: 'array',
-    //       'items': innerArraySchema
-    //     }
-    //   },
-    //   required: ["name", 'age', 'department'],
-    //   additionalProperties: false,
-    // }
-    // const user = {
-    //   name, age: age * 1, department: [{ departmentId, role }]
-    // }
-    // const validate = this.ajv.compile(schema)
-    // const valid = validate(user)
-    // console.log({ valid, user });
-    // if (valid) {
-    //   const newUser = new User(user)
-    //   return newUser.save()
-    // } else
-
+    return this.userRepository.create(data)
   }
 
   edit(id: validateRequestFindId, data: validateRequestEdit): Promise<any> {
-    if (!this.checkId(id))
-      throw new Error("Du lieu khong hop le");
+
     let { name, age } = data
+    return this.userRepository.edit(id, { name, age })
 
-    const schema = {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        age: { type: 'number' },
-      },
-      required: ['name', 'age']
-    }
-
-    const validate = this.ajv.compile(schema)
-    const valid = validate(data)
-    if (!valid)
-      throw new Error("Du lieu khong hop le");
-    User.findByIdAndUpdate(id, { name, age })
-    return this.promissSucces('update succes', {})
 
   }
 

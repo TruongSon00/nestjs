@@ -1,17 +1,17 @@
-import { Controller, Post, Body, Param, Get, Delete, Put, Inject } from '@nestjs/common';
-import { IService } from 'src/core/interfaceService';
+import { Controller, Post, Body, Param, Get, Delete, Put, Inject, Injectable } from '@nestjs/common';
 import { IUser } from 'src/model/user.model';
-import { IBaseRepository } from 'src/repository/IBaseRepository';
 import { validateRequestCreate, validateRequestEdit, validateRequestFindId } from 'src/requestValidate/requestUser';
+import { IUserService } from './interface/user.service.interface';
 import { UserService } from './user.service';
 
 
+@Injectable()
 @Controller('user')
-export class UserController implements IService {
+export class UserController {
 
-    constructor(private readonly userService: UserService) {
-        this.userService = userService
-    }
+    constructor(
+        @Inject('IUserService')
+        private readonly userService: IUserService<IUser>) { }
 
     @Get()
     getList(): Promise<IUser[]> {
