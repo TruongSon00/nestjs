@@ -11,10 +11,7 @@ export class UserService implements IUserService<IUser> {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository) {
-
   }
-
-
 
   ajv = new Ajv()
 
@@ -42,7 +39,7 @@ export class UserService implements IUserService<IUser> {
   }
 
   create(data: validateRequestCreate): Promise<any> {
-    return this.userRepository.create(data)
+    return this.userRepository.createUser(data)
   }
 
   edit(id: validateRequestFindId, data: validateRequestEdit): Promise<any> {

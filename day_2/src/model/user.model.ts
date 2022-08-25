@@ -12,7 +12,7 @@ export interface IUser {
 }
 
 
-const userScheme = new Schema<IUser>({
+export const userSchema = new Schema<IUser>({
     name: { type: String, required: true },
     age: { type: Number, required: true },
     department: [{
@@ -24,5 +24,5 @@ const userScheme = new Schema<IUser>({
 
 
 
-export const User = model('user', userScheme)
+export const User = model('user', userSchema)
 

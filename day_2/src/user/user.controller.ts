@@ -36,8 +36,8 @@ export class UserController {
     }
 
     @Post()
-    async create(@Body() user: validateRequestCreate) {
-
+    async create(@Body() user: any) {
+        console.log(user);
         return await this.userService.create(user)
     }
 
