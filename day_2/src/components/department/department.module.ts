@@ -19,6 +19,10 @@ import { DepartmentService } from './department.service';
       provide: 'IDepartmentRepository',
       useClass: departmentRepository,
     },
+    {
+      provide: 'IDepartmentService',
+      useClass: DepartmentService,
+    },
   ],
   controllers: [DepartmentController],
 })

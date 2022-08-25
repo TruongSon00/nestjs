@@ -12,21 +12,21 @@ export class userRepository
   implements IUserRepository
 {
   constructor(
-    @InjectModel('users')
+    @InjectModel('userModel')
     private userModel: Model<userModel>,
   ) {
     super(userModel);
   }
 
   async createUser(user: validateUserCreate): Promise<userModel> {
-    const { name, age, _id } = user;
+    const { name, age, departmentId } = user;
     let role = user.role;
     role = role || 0;
 
     const newUser = new this.userModel();
     newUser.name = name;
     newUser.age = age;
-    newUser.department.push({ _id, role });
+    newUser.department.push({ departmentId, role });
     return newUser.save();
   }
 }

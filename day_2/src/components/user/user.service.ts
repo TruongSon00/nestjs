@@ -9,6 +9,7 @@ import {
 } from 'src/requestValidate/requestUser';
 import { IUserService } from './interface/user.service.interface';
 import { IUserRepository } from './interface/user.interface.repository';
+import { checkId } from '../../requestValidate/requestCommon';
 @Injectable()
 export class UserService implements IUserService<userModel> {
   constructor(
@@ -29,11 +30,7 @@ export class UserService implements IUserService<userModel> {
     });
   }
 
-  checkId(id: any) {
-    if (Types.ObjectId.isValid(id)) return new Types.ObjectId(id) == id;
-    else return false;
-  }
-
+  // -------- them get list aggregate department -----------
   getList(filter: any): Promise<userModel[]> {
     const listuser = this.userRepository.getList(filter);
     return listuser;
@@ -49,7 +46,7 @@ export class UserService implements IUserService<userModel> {
   }
 
   async getById(id: validateUserFindId): Promise<any> {
-    if (!this.checkId(id)) throw new Error('Du lieu khong hop le');
+    checkId(id);
     try {
       const user = await this.userRepository.getById(id);
       return this.promissSucces('Get user succes', user);
@@ -59,9 +56,9 @@ export class UserService implements IUserService<userModel> {
   }
 
   delete(id: validateUserFindId): Promise<any> {
-    if (!this.checkId(id)) throw new Error('Du lieu khong hop le');
+    checkId(id);
 
     this.userRepository.delete(id);
-    return this.promissSucces('Get user succes', {});
+    return this.promissSucces('delete user succes', {});
   }
 }

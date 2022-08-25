@@ -6,7 +6,7 @@ export interface userModel extends baseModel {
   age: number;
   department: [
     {
-      _id: Types.ObjectId;
+      departmentId: Types.ObjectId;
       role: number;
     },
   ];
@@ -17,7 +17,7 @@ export const userSchema = new Schema({
   age: { type: Number, required: true },
   department: [
     {
-      _id: { type: Types.ObjectId, required: true, unique: true },
+      departmentId: { type: Types.ObjectId, required: true },
       role: { type: Number },
     },
   ],

@@ -10,6 +10,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { userModel } from 'src/model/user.model';
+import { checkId } from 'src/requestValidate/requestCommon';
 import {
   validateUserCreate,
   validateUserEdit,
@@ -30,18 +31,21 @@ export class UserController {
     return this.userService.getList({});
   }
 
-  @Put()
-  edit(id: validateUserFindId, data: validateUserEdit): Promise<any> {
-    throw new Error('Method not implemented.');
+  @Put(':id')
+  edit(@Param('id') id: any, @Body() data: validateUserEdit): Promise<any> {
+    checkId(id);
+    return this.userService.edit(id, data);
   }
 
   @Get(':id')
-  getById(@Param('id') id: validateUserFindId): Promise<any> {
+  getById(@Param('id') id: any): Promise<any> {
+    checkId(id);
     return this.userService.getById(id);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: validateUserFindId): Promise<any> {
+  delete(@Param('id') id: any): Promise<any> {
+    checkId(id);
     return this.userService.delete(id);
   }
 

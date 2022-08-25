@@ -32,7 +32,8 @@ export abstract class baseRepositoryAbstract<T>
     return await this.model.find(filter);
   }
   async edit(id: any, data: any): Promise<any> {
-    return await this.model.findByIdAndUpdate(id, data);
+    const { name, descript } = data;
+    return await this.model.findByIdAndUpdate(id, { name, descript });
   }
   async getById(id: any): Promise<T> {
     return await this.model.findById(id);

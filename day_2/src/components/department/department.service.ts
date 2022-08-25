@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { filter } from 'rxjs';
 import { departmentModel } from 'src/model/department.model';
+import { userModel } from 'src/model/user.model';
 import {
   validateDepartmentCreate,
   validateDepartmentEdit,
@@ -13,18 +15,17 @@ export class DepartmentService implements IDepartmentService<departmentModel> {
     @Inject('IDepartmentRepository')
     private readonly departmentRepository: IDepartmentRepository,
   ) {}
-  editDepartment(id: any, data: object): Promise<any> {
-    return this.departmentRepository.edit(id, data);
+  editDepartment(data: any): Promise<any> {
+    return this.departmentRepository.edit(data.id, data);
   }
   delDepartment(id: any): Promise<any> {
-    // this.departmentRepository.de
-    throw new Error('');
+    return this.departmentRepository.delDepartment(id);
   }
-  listDepartment(data: object): Promise<any> {
-    throw new Error('Method not implemented.');
+  listDepartment(): Promise<any> {
+    return this.departmentRepository.getList({});
   }
-  getDepartmentById(id: any): Promise<departmentModel> {
-    throw new Error('Method not implemented.');
+  getDepartmentById(id: string): Promise<userModel[]> {
+    return this.departmentRepository.getByIdDepartmentAggregate(id);
   }
   createDepartment(data: validateDepartmentCreate): Promise<departmentModel> {
     return this.departmentRepository.createDepartment(data);

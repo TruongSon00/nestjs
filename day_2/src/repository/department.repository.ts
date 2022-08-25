@@ -4,8 +4,10 @@ import { baseRepositoryAbstract } from 'src/core/base.repository.abstract';
 import { IDepartmentRepository } from 'src/components/department/interface/department.repository.interface';
 import { departmentModel } from 'src/model/department.model';
 import { validateDepartmentCreate } from 'src/requestValidate/requestDepartment';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { userModel } from 'src/model/user.model';
+import process from 'process';
+import { resolve } from 'path';
 
 @Injectable()
 export class departmentRepository
@@ -20,14 +22,43 @@ export class departmentRepository
   ) {
     super(departmentModel);
   }
+  getByIdDepartmentAggregate(id: string): Promise<userModel[]> {
+    const query = this.userModel.aggregate([
+      { $unwind: '$department' },
+      { $match: { 'department.departmentId': new Types.ObjectId(id) } },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$department', '$$ROOT'],
+          },
+        },
+      },
+      { $project: { department: 0 } },
+      {
+        $lookup: {
+          from: 'departmentmodels',
+          localField: 'departmentId',
+          foreignField: '_id',
+          as: 'department',
+        },
+      },
+    ]);
+    return query.exec();
+  }
   async delDepartment(id: string): Promise<any> {
-    this.departmentModel.findByIdAndDelete(id);
-    const users = await this.userModel.updateMany({ 'department._id': id }, {department: });
-    
-    users.save()
-    users.map((user) => {
-      user.department.id(id
-    });
+    try {
+      await this.departmentModel.findByIdAndDelete(id);
+
+      await this.userModel.updateMany(
+        {},
+        { $pull: { department: { departmentId: id } } },
+      );
+      return new Promise((resolve) => {
+        resolve('delete succes');
+      });
+    } catch (error) {
+      throw new Error('Loi database');
+    }
   }
 
   createDepartment(data: validateDepartmentCreate): Promise<departmentModel> {

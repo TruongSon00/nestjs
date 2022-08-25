@@ -25,7 +25,5 @@ export class validateDepartmentEdit {
 }
 
 export class validateDepartmentFindId {
-  @IsMongoId()
-  @IsNotEmpty()
   id: string;
 }

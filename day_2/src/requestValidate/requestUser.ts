@@ -22,7 +22,7 @@ export class validateUserCreate {
 
   @IsNotEmpty()
   @IsMongoId()
-  _id: Types.ObjectId;
+  departmentId: Types.ObjectId;
 
   @IsNotEmpty()
   @Min(0)

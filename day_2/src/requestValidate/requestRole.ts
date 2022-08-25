@@ -3,7 +3,7 @@ import { Min, IsInt, IsNotEmpty, IsMongoId, Max } from 'class-validator';
 export class validateRoleEdit {
   @IsMongoId()
   @IsNotEmpty()
-  userid: string;
+  userId: string;
 
   @IsMongoId()
   @IsNotEmpty()
@@ -19,7 +19,7 @@ export class validateRoleEdit {
 export class validateRoleDel {
   @IsMongoId()
   @IsNotEmpty()
-  userid: string;
+  userId: string;
 
   @IsMongoId()
   @IsNotEmpty()
@@ -29,7 +29,7 @@ export class validateRoleDel {
 export class validateRoleAdd {
   @IsMongoId()
   @IsNotEmpty()
-  userid: string;
+  userId: string;
 
   @IsMongoId()
   @IsNotEmpty()
