@@ -22,7 +22,7 @@ export class departmentRepository
   }
   async delDepartment(id: string): Promise<any> {
     this.departmentModel.findByIdAndDelete(id);
-    const users = await this.userModel.find({ 'department._id': id });
+    const users = await this.userModel.updateMany({ 'department._id': id }, {department: });
     
     users.save()
     users.map((user) => {
