@@ -1,11 +1,12 @@
-import { Schema, model, ObjectId } from 'mongoose';
+import { Schema } from 'mongoose';
+import { baseModel } from './base.model';
 
-export interface IDepartment {
-    name: string,
-    descript: String
+export interface departmentModel extends baseModel {
+  name: string;
+  descript: string;
 }
 
-const departmentSchema = new Schema<IDepartment>({
-    name: { type: String, required: true },
-    descript: { type: String, required: true },
-})
+export const departmentSchema = new Schema({
+  name: { type: String, required: true },
+  descript: { type: String, required: true },
+});

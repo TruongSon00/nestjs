@@ -1,28 +1,24 @@
-import { Schema, model, ObjectId, Types } from 'mongoose';
+import { Schema, Types } from 'mongoose';
+import { baseModel } from './base.model';
 
-
-
-export interface IUser {
-    name: string,
-    age: number,
-    department: [{
-        departmentId: ObjectId,
-        role: number
-    }],
+export interface userModel extends baseModel {
+  name: string;
+  age: number;
+  department: [
+    {
+      _id: Types.ObjectId;
+      role: number;
+    },
+  ];
 }
 
-
-export const userSchema = new Schema<IUser>({
-    name: { type: String, required: true },
-    age: { type: Number, required: true },
-    department: [{
-        departmentId: { type: Types.ObjectId, required: true },
-        role: { type: Number }
-
-    }],
-})
-
-
-
-export const User = model('user', userSchema)
-
+export const userSchema = new Schema({
+  name: { type: String, required: true },
+  age: { type: Number, required: true },
+  department: [
+    {
+      _id: { type: Types.ObjectId, required: true, unique: true },
+      role: { type: Number },
+    },
+  ],
+});

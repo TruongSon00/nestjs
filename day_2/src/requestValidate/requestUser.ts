@@ -1,41 +1,49 @@
 import {
-    IsString, Min, IsInt, IsNotEmpty, IsMongoId, Max
-} from "class-validator";
-import { ObjectId } from "mongoose";
+  IsString,
+  Min,
+  IsInt,
+  IsNotEmpty,
+  IsMongoId,
+  Max,
+  IsEmpty,
+} from 'class-validator';
+import { ObjectId, Types } from 'mongoose';
 
-export class validateRequestCreate {
-    @IsString()
-    @IsNotEmpty()
-    name: string
+export class validateUserCreate {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-    @IsInt()
-    @Min(10)
-    @Max(100)
-    @IsNotEmpty()
-    age: number
+  @IsInt()
+  @Min(10)
+  @Max(100)
+  @IsNotEmpty()
+  age: number;
 
-    @IsNotEmpty()
-    @IsMongoId()
-    departmentId: ObjectId
+  @IsNotEmpty()
+  @IsMongoId()
+  _id: Types.ObjectId;
 
-    @IsInt()
-    role: number
+  @IsNotEmpty()
+  @Min(0)
+  @Max(3)
+  role: number;
 }
 
-export class validateRequestEdit {
-    @IsString()
-    @IsNotEmpty()
-    name: string
+export class validateUserEdit {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-    @IsInt()
-    @Min(10)
-    @Max(100)
-    @IsNotEmpty()
-    age: number
+  @IsInt()
+  @Min(10)
+  @Max(100)
+  @IsNotEmpty()
+  age: number;
 }
 
-export class validateRequestFindId {
-    @IsMongoId()
-    @IsNotEmpty()
-    id: string
+export class validateUserFindId {
+  @IsMongoId()
+  @IsNotEmpty()
+  id: string;
 }

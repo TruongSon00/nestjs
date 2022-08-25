@@ -1,38 +1,32 @@
-import { Injectable } from "@nestjs/common";
-import { InjectConnection, InjectModel } from "@nestjs/mongoose";
-import { Connection, Model } from "mongoose";
-import { baseRepositoryAbstract } from "src/core/base.repository.abstract";
-import { IUser } from "src/model/user.model";
-import { validateRequestCreate } from "src/requestValidate/requestUser";
-import { IUserRepository } from "src/user/interface/user.interface.repository";
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { baseRepositoryAbstract } from 'src/core/base.repository.abstract';
+import { userModel } from 'src/model/user.model';
+import { validateUserCreate } from 'src/requestValidate/requestUser';
+import { IUserRepository } from 'src/components/user/interface/user.interface.repository';
 
 @Injectable()
 export class userRepository
-    extends baseRepositoryAbstract<IUser>
-    implements IUserRepository {
+  extends baseRepositoryAbstract<userModel>
+  implements IUserRepository
+{
+  constructor(
+    @InjectModel('users')
+    private userModel: Model<userModel>,
+  ) {
+    super(userModel);
+  }
 
-    private userModel: Model<IUser>
-    constructor(
-        @InjectModel('users')
-        userModel: Model<IUser>
-    ) {
-        super(userModel)
-    }
+  async createUser(user: validateUserCreate): Promise<userModel> {
+    const { name, age, _id } = user;
+    let role = user.role;
+    role = role || 0;
 
-    createUser(user: validateRequestCreate): Promise<IUser> {
-        let { name, age, departmentId, role } = user
-        role = role || 0
-        // const newUser = this.userModel.create()
-        console.log(this.userModel);
-        // newUser.name = name
-        // newUser.age = age
-        // newUser.department[0].departmentId = departmentId
-        // newUser.department[0].role = role
-        // return newUser.save()
-        throw new Error("");
-
-    }
-
-
-
+    const newUser = new this.userModel();
+    newUser.name = name;
+    newUser.age = age;
+    newUser.department.push({ _id, role });
+    return newUser.save();
+  }
 }
