@@ -34,6 +34,7 @@ export class departmentRepository
         },
       },
       { $project: { department: 0 } },
+
       {
         $lookup: {
           from: 'departmentmodels',

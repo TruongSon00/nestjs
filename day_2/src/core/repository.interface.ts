@@ -11,6 +11,7 @@ export interface repositoryInterface<T> {
     filter: object,
     lookup: any,
     sort: object,
+    unwind?: string,
     limit?: number,
   ): Promise<T | any>;
   edit(id: any, data: any): Promise<T | any>;

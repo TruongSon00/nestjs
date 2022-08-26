@@ -32,8 +32,7 @@ export abstract class baseRepositoryAbstract<T>
     return await this.model.find(filter);
   }
   async edit(id: any, data: any): Promise<any> {
-    const { name, descript } = data;
-    return await this.model.findByIdAndUpdate(id, { name, descript });
+    return await this.model.findByIdAndUpdate(id, data);
   }
   async getById(id: any): Promise<T> {
     return await this.model.findById(id);
@@ -42,10 +41,12 @@ export abstract class baseRepositoryAbstract<T>
     filter: object,
     lookup: any,
     sort: any,
+    unwind?: string,
     limit?: number,
   ): Promise<T | any> {
     const query = this.model.aggregate([
       { $match: filter },
+      { $unwind: unwind || '$_id' },
       { $lookup: lookup },
       { $sort: sort },
     ]);

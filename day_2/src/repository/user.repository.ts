@@ -17,16 +17,53 @@ export class userRepository
   ) {
     super(userModel);
   }
-
+  getByIdWithAggregate(
+    filter: object,
+    lookup: object,
+    sort: object,
+    unwind?: string,
+    limit?: number,
+  ): Promise<userModel> {
+    return;
+  }
   async createUser(user: validateUserCreate): Promise<userModel> {
     const { name, age, departmentId } = user;
     let role = user.role;
     role = role || 0;
-
     const newUser = new this.userModel();
     newUser.name = name;
     newUser.age = age;
     newUser.department.push({ departmentId, role });
     return newUser.save();
+  }
+  async getUserById(id: any): Promise<userModel[]> {
+    const query = this.userModel.aggregate([
+      { $match: { _id: new Types.ObjectId(id) } },
+      { $unwind: '$department' },
+      {
+        $lookup: {
+          from: 'departmentmodels',
+          let: { department: '$department' },
+          as: 'departments',
+          pipeline: [
+            {
+              $match: { $expr: { $eq: ['$$department.departmentId', '$_id'] } },
+            },
+            // {
+            //   $replaceRoot: {
+            //     newRoot: {
+            //       $mergeObjects: [
+            //         { $arrayElemAt: ['$departments', 0] },
+            //         '$$department',
+            //       ],
+            //     },
+            //   },
+            // },
+          ],
+        },
+      },
+      { $sort: { 'department.createdAt': -1 } },
+    ]);
+    return await query.exec();
   }
 }

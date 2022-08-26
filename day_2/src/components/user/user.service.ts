@@ -45,14 +45,12 @@ export class UserService implements IUserService<userModel> {
     return this.userRepository.edit(id, { name, age });
   }
 
-  async getById(id: validateUserFindId): Promise<any> {
+  async getById(id: string): Promise<any> {
     checkId(id);
-    try {
-      const user = await this.userRepository.getById(id);
-      return this.promissSucces('Get user succes', user);
-    } catch (err) {
-      throw new Error('Loi database');
-    }
+    return this.userRepository.getById(id);
+  }
+  catch(err) {
+    throw new Error(err);
   }
 
   delete(id: validateUserFindId): Promise<any> {

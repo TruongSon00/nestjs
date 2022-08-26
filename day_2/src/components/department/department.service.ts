@@ -15,8 +15,8 @@ export class DepartmentService implements IDepartmentService<departmentModel> {
     @Inject('IDepartmentRepository')
     private readonly departmentRepository: IDepartmentRepository,
   ) {}
-  editDepartment(data: any): Promise<any> {
-    return this.departmentRepository.edit(data.id, data);
+  editDepartment({ id, ...data }): Promise<any> {
+    return this.departmentRepository.edit(id, data);
   }
   delDepartment(id: any): Promise<any> {
     return this.departmentRepository.delDepartment(id);
