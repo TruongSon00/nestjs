@@ -6,15 +6,14 @@ import {
   Get,
   Delete,
   Put,
-  Inject,
   Injectable,
+  Inject,
 } from '@nestjs/common';
 import { userModel } from 'src/model/user.model';
 import { checkId } from 'src/requestValidate/requestCommon';
 import {
   validateUserCreate,
   validateUserEdit,
-  validateUserFindId,
 } from 'src/requestValidate/requestUser';
 import { IUserService } from './interface/user.service.interface';
 

@@ -14,7 +14,8 @@ export interface repositoryInterface<T> {
     unwind?: string,
     limit?: number,
   ): Promise<T | any>;
-  edit(id: any, data: any): Promise<T | any>;
+  editById(id: any, data: any): Promise<T | any>;
   getById(id: any): Promise<T>;
   delete(id: any): Promise<any>;
+  edit(filter: any, data: any): Promise<T | any>;
 }

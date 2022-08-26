@@ -5,6 +5,7 @@ import { baseRepositoryAbstract } from 'src/core/base.repository.abstract';
 import { userModel } from 'src/model/user.model';
 import { validateUserCreate } from 'src/requestValidate/requestUser';
 import { IUserRepository } from 'src/components/user/interface/user.interface.repository';
+import { departmentModel } from 'src/model/department.model';
 
 @Injectable()
 export class userRepository
@@ -14,20 +15,17 @@ export class userRepository
   constructor(
     @InjectModel('userModel')
     private userModel: Model<userModel>,
+    @InjectModel('departmentModel')
+    private readonly departmentModel: Model<departmentModel>,
   ) {
     super(userModel);
   }
-  getByIdWithAggregate(
-    filter: object,
-    lookup: object,
-    sort: object,
-    unwind?: string,
-    limit?: number,
-  ): Promise<userModel> {
-    return;
-  }
+
   async createUser(user: validateUserCreate): Promise<userModel> {
     const { name, age, departmentId } = user;
+    const department = await this.departmentModel.findById(departmentId);
+    if (!department) throw new Error('Department not found');
+
     let role = user.role;
     role = role || 0;
     const newUser = new this.userModel();
@@ -44,25 +42,34 @@ export class userRepository
         $lookup: {
           from: 'departmentmodels',
           let: { department: '$department' },
-          as: 'departments',
+          as: 'department',
           pipeline: [
             {
               $match: { $expr: { $eq: ['$$department.departmentId', '$_id'] } },
             },
-            // {
-            //   $replaceRoot: {
-            //     newRoot: {
-            //       $mergeObjects: [
-            //         { $arrayElemAt: ['$departments', 0] },
-            //         '$$department',
-            //       ],
-            //     },
-            //   },
-            // },
+            {
+              $replaceRoot: {
+                newRoot: {
+                  $mergeObjects: ['$$ROOT', '$$department'],
+                },
+              },
+            },
           ],
         },
       },
       { $sort: { 'department.createdAt': -1 } },
+      {
+        $group: {
+          _id: '_id',
+          user: { $first: '$$ROOT' },
+          departments: { $push: { $first: '$department' } },
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: { $mergeObjects: ['$user', { department: '$departments' }] },
+        },
+      },
     ]);
     return await query.exec();
   }

@@ -6,8 +6,6 @@ import { departmentModel } from 'src/model/department.model';
 import { validateDepartmentCreate } from 'src/requestValidate/requestDepartment';
 import { Model, Types } from 'mongoose';
 import { userModel } from 'src/model/user.model';
-import process from 'process';
-import { resolve } from 'path';
 
 @Injectable()
 export class departmentRepository

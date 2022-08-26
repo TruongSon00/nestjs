@@ -9,6 +9,9 @@ export abstract class baseRepositoryAbstract<T>
   constructor(model: Model<T>) {
     this.model = model;
   }
+  async editById(id: any, data: any): Promise<any> {
+    return await this.model.findByIdAndUpdate(id, data, { new: true });
+  }
 
   getListWithAggregate(
     filter: object,
@@ -31,8 +34,8 @@ export abstract class baseRepositoryAbstract<T>
   async getList(filter: object): Promise<T[]> {
     return await this.model.find(filter);
   }
-  async edit(id: any, data: any): Promise<any> {
-    return await this.model.findByIdAndUpdate(id, data);
+  async edit(filter: object, data: object): Promise<any> {
+    return await this.model.findOneAndUpdate(filter, data, { new: true });
   }
   async getById(id: any): Promise<T> {
     return await this.model.findById(id);

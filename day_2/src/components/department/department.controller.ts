@@ -8,14 +8,12 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import { departmentModel } from 'src/model/department.model';
 import { checkId } from 'src/requestValidate/requestCommon';
 import {
   validateDepartmentCreate,
   validateDepartmentEdit,
-  validateDepartmentFindId,
 } from 'src/requestValidate/requestDepartment';
 import { IDepartmentService } from './interface/department.service.interface';
 

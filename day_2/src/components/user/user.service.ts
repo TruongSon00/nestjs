@@ -47,7 +47,7 @@ export class UserService implements IUserService<userModel> {
 
   async getById(id: string): Promise<any> {
     checkId(id);
-    return this.userRepository.getById(id);
+    return this.userRepository.getUserById(id);
   }
   catch(err) {
     throw new Error(err);
